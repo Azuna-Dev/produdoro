@@ -21,7 +21,7 @@ jobs:
         id: changed-files
         uses: actions/github-script@v6
         with:
-          script: |o
+          script: |
             const { data: pullRequest } = await github.pulls.get({
               owner: context.repo.owner,
               repo: context.repo.repo,

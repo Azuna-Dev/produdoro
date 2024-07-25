@@ -25,9 +25,9 @@ jobs:
       - name: Get Modified Files
         id: get-files
         run: |
-          base_branch="origin/dev"
-          current_branch=$(git rev-parse --abbrev-ref HEAD)
-          modified_files=$(git diff --name-only $base_branch...$current_branch -- '*.java')
+          base_commit=${{ github.event.pull_request.base.sha }}
+          current_commit=${{ github.sha }}
+          modified_files=$(git diff --name-only $base_commit $current_commit -- '*.java')
           echo "Modified files: $modified_files"
           echo "files=$modified_files" >> $GITHUB_ENV
 

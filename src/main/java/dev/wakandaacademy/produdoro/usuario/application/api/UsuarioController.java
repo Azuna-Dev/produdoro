@@ -42,8 +42,15 @@ public class UsuarioController implements UsuarioAPI {
 	public void mudarStatusParaPausaCurta(String token, UUID idUsuario) {
 		log.info("[inicia] UsuarioController - mudarStatusParaPausaCurta");
 		String email = getUsuarioByToken(token);
-		usuarioAppplicationService.mudarStatusParaFoco(email, idUsuario);
+		usuarioAppplicationService.mudarStatusParaPausaCurta(email, idUsuario);
 		log.info("[finaliza] UsuarioController - mudarStatusParaPausaCurta");
+	}
+
+	@Override
+	public void mudarStatusParaPausaLonga(String token, UUID idUsuario) {
+		log.info("[inicia] UsuarioController - mudarStatusParaPausaCurta");
+		String email = getUsuarioByToken(token);
+		usuarioAppplicationService.mudarStatusParaPausaLonga(email, idUsuario);
 	}
 
 	private String getUsuarioByToken(String token) {

@@ -17,6 +17,28 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
+      - name: Get Changed Files
+        id: changed-files
+        uses: actions/github-script@v6
+        with:
+          script: |o
+            const { data: pullRequest } = await github.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number
+            });
+            const files = await github.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number
+            });
+            const fileNames = files.data.map(f => f.filename).join(' ');
+            core.setOutput('files', fileNames);
+
+      - name: Run Checkstyle
+        run: mvn checkstyle:check -Dcheckstyle.includes="${{ steps.changed-files.outputs.files }}"
+        if: steps.changed-files.outputs.files != ''
+    
       - name: Build with Maven
         run: mvn clean install
 

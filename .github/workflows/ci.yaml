@@ -31,12 +31,20 @@ jobs:
           echo "Modified files: $modified_files"
           echo "FILES=$modified_files" >> $GITHUB_ENV
 
+      - name: Debug Files Variable
+        run: echo "FILES: $FILES"
+
       - name: Run Checkstyle on Modified Files
         run: |
           if [ -n "$FILES" ]; then
             for file in $FILES; do
-              # Certifique-se de que o caminho do arquivo está correto e escapado se necessário
-              mvn checkstyle:check -Dcheckstyle.includes="$file" || exit 1
+              # Verifica se o arquivo existe e se o caminho está correto
+              if [ -f "$file" ]; then
+                echo "Running Checkstyle on $file"
+                mvn checkstyle:check -Dcheckstyle.includes="$file" || exit 1
+              else
+                echo "File $file does not exist."
+              fi
             done
           else
             echo "No Java files were modified."

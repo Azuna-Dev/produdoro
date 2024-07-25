@@ -29,13 +29,14 @@ jobs:
           current_commit=${{ github.sha }}
           modified_files=$(git diff --name-only $base_commit $current_commit -- '*.java')
           echo "Modified files: $modified_files"
-          echo "files=$modified_files" >> $GITHUB_ENV
+          echo "FILES=$modified_files" >> $GITHUB_ENV
 
       - name: Run Checkstyle on Modified Files
         run: |
-          if [ -n "$files" ]; then
-            for file in $files; do
-              mvn checkstyle:check -Dcheckstyle.includes=$file || exit 1
+          if [ -n "$FILES" ]; then
+            for file in $FILES; do
+              # Certifique-se de que o caminho do arquivo está correto e escapado se necessário
+              mvn checkstyle:check -Dcheckstyle.includes="$file" || exit 1
             done
           else
             echo "No Java files were modified."

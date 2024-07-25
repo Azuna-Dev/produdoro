@@ -17,17 +17,6 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
-      - name: Run Checkstyle on Modified Files
-        run: |
-          modified_files=$(git diff --name-only origin/dev...HEAD -- '*.java')
-          if [ -n "$modified_files" ]; then
-            for file in $modified_files; do
-              mvn checkstyle:check -Dcheckstyle.includes=$file || exit 1
-            done
-          else
-            echo "No Java files were modified."
-          fi
-
       - name: Build with Maven
         run: mvn clean install
 

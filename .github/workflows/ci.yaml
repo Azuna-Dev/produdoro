@@ -17,6 +17,28 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
+      - name: Fetch Branches
+        run: git fetch origin
+
+      - name: Debug Modified Files
+        run: |
+          base_branch="origin/dev"
+          current_branch=$(git rev-parse --abbrev-ref HEAD)
+          modified_files=$(git diff --name-only $base_branch...$current_branch -- '*.java')
+          echo "Modified files: $modified_files"
+          echo "::set-output name=files::$modified_files"
+
+      - name: Run Checkstyle on Modified Files
+        run: |
+              modified_files="${{ steps.debug-modified-files.outputs.files }}"
+              if [ -n "$modified_files" ]; then
+                  for file in $modified_files; do
+                    mvn checkstyle:check -Dcheckstyle.includes=$file || exit 1
+                  done
+              else
+                  echo "No Java files were modified."
+              fi
+
       - name: Build with Maven
         run: mvn clean install
 

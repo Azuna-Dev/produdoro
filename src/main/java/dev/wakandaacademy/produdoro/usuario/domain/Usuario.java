@@ -36,7 +36,7 @@ public class Usuario {
 	private StatusUsuario status = StatusUsuario.FOCO;
 	@Builder.Default
 	private Integer quantidadePomodorosPausaCurta = 0;
-	
+
 	public Usuario(UsuarioNovoRequest usuarioNovo, ConfiguracaoPadrao configuracaoPadrao) {
 		this.idUsuario = UUID.randomUUID();
 		this.email = usuarioNovo.getEmail();
@@ -44,24 +44,41 @@ public class Usuario {
 		this.configuracao = new ConfiguracaoUsuario(configuracaoPadrao);
 	}
 
-    public void mudarStatusPausaCurta(UUID idUsuario) {
+	public void mudarStatusParaFoco(UUID idUsuario) {
+		pertenceAoUsuario(idUsuario);
+		validarSeJaEstaEmFoco();
+		alterarStatusParaFOCO();
+	}
+
+	private void alterarStatusParaFOCO() {
+		this.status = StatusUsuario.FOCO;
+	}
+
+	private void validarSeJaEstaEmFoco() {
+		if (this.status.equals(StatusUsuario.FOCO)) {
+			throw APIException.build(HttpStatus.BAD_REQUEST, "Usuário já está em foco!");
+		}
+	}
+
+	private void pertenceAoUsuario(UUID idUsuario) {
+		if (!this.idUsuario.equals(idUsuario)) {
+			throw APIException.build(HttpStatus.UNAUTHORIZED, "Credencial de autencição não é valida!");
+		}
+	}
+
+	public void mudarStatusPausaCurta(UUID idUsuario) {
 		pertenceAoUsuario(idUsuario);
 		validarSeJaEstaEmPausaCurta();
 		alterarStatusParaPausaCurta();
-    }
+	}
+
 	private void alterarStatusParaPausaCurta() {
 		this.status = StatusUsuario.PAUSA_CURTA;
 	}
 
 	private void validarSeJaEstaEmPausaCurta() {
-		if (this.status.equals(StatusUsuario.PAUSA_CURTA)){
+		if (this.status.equals(StatusUsuario.PAUSA_CURTA)) {
 			throw APIException.build(HttpStatus.BAD_REQUEST, "Usuário já está em pausa curta!");
-		}
-	}
-
-	private void pertenceAoUsuario(UUID idUsuario) {
-		if (!this.idUsuario.equals(idUsuario)){
-			throw APIException.build(HttpStatus.UNAUTHORIZED, "Credencial de autencição não é valida!");
 		}
 	}
 
@@ -76,7 +93,7 @@ public class Usuario {
 	}
 
 	private void validarSeJaEstaEmPausaLonga() {
-		if (this.status.equals(StatusUsuario.PAUSA_LONGA)){
+		if (this.status.equals(StatusUsuario.PAUSA_LONGA)) {
 			throw APIException.build(HttpStatus.BAD_REQUEST, "Usuário já está em pausa longa!");
 		}
 	}

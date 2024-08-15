@@ -19,21 +19,22 @@ import java.util.UUID;
 @Log4j2
 @RequiredArgsConstructor
 public class UsuarioController implements UsuarioAPI {
-	private final UsuarioService usuarioAppplicationService;
+	private final UsuarioService usuarioService;
 	private final TokenService tokenService;
 
 	@Override
 	public UsuarioCriadoResponse postNovoUsuario(@Valid UsuarioNovoRequest usuarioNovo) {
 		log.info("[inicia] UsuarioController - postNovoUsuario");
-		UsuarioCriadoResponse usuarioCriado = usuarioAppplicationService.criaNovoUsuario(usuarioNovo);
+		UsuarioCriadoResponse usuarioCriado = usuarioService.criaNovoUsuario(usuarioNovo);
 		log.info("[finaliza] UsuarioController - postNovoUsuario");
 		return usuarioCriado;
 	}
+
 	@Override
 	public UsuarioCriadoResponse buscaUsuarioPorId(UUID idUsuario) {
 		log.info("[inicia] UsuarioController - buscaUsuarioPorId");
 		log.info("[idUsuario] {}", idUsuario);
-		UsuarioCriadoResponse buscaUsuario = usuarioAppplicationService.buscaUsuarioPorId(idUsuario);
+		UsuarioCriadoResponse buscaUsuario = usuarioService.buscaUsuarioPorId(idUsuario);
 		log.info("[finaliza] UsuarioController - buscaUsuarioPorId");
 		return buscaUsuario;
 	}
@@ -42,16 +43,24 @@ public class UsuarioController implements UsuarioAPI {
 	public void mudarStatusParaPausaCurta(String token, UUID idUsuario) {
 		log.info("[inicia] UsuarioController - mudarStatusParaPausaCurta");
 		String email = getUsuarioByToken(token);
-		usuarioAppplicationService.mudarStatusParaPausaCurta(email, idUsuario);
+		usuarioService.mudarStatusParaPausaCurta(email, idUsuario);
 		log.info("[finaliza] UsuarioController - mudarStatusParaPausaCurta");
 	}
 
 	@Override
 	public void mudarStatusParaFoco(String token, UUID idUsuario) {
-		log.info("[inicia] UsuarioController - mudarStatusParaPausaCurta");
+		log.info("[inicia] UsuarioController - mudarStatusParaFoco");
 		String email = getUsuarioByToken(token);
-		usuarioAppplicationService.mudarStatusParaFoco(email, idUsuario);
-		log.info("[finaliza] UsuarioController - mudarStatusParaPausaCurta");
+		usuarioService.mudarStatusParaFoco(email, idUsuario);
+		log.info("[finaliza] UsuarioController - mudarStatusParaFoco");
+	}
+
+	@Override
+	public void mudarStatusParaPausaLonga(String token, UUID idUsuario) {
+		log.info("[inicia] UsuarioController - mudarStatusParaPausaLonga");
+		String email = getUsuarioByToken(token);
+		usuarioService.mudarStatusParaPausaLonga(email, idUsuario);
+		log.info("[finaliza] UsuarioController - mudarStatusParaPausaLonga");
 	}
 
 	private String getUsuarioByToken(String token) {

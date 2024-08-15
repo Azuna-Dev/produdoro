@@ -76,4 +76,28 @@ class UsuarioApplicationServiceTest {
         assertNotEquals(idUsuario, usuario.getIdUsuario());
         assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatusException());
     }
+
+    @Test
+    void deveMudarStatusParaPausaLonga_QuandoOStatusEstiverDiferenteDePausaLonga(){
+        Usuario usuario = DataHelper.createUsuario2();
+
+        when(usuarioRepository.buscaUsuarioPorId(any())).thenReturn(usuario);
+        when(usuarioRepository.buscaUsuarioPorEmail(anyString())).thenReturn(usuario);
+        usuarioApplicationService.mudarStatusParaPausaLonga(usuario.getEmail(), usuario.getIdUsuario());
+
+        assertEquals(StatusUsuario.PAUSA_LONGA, usuario.getStatus());
+        verify(usuarioRepository, times(1)).salva(usuario);
+    }
+    @Test
+    void deveNaoMudarStatusParaPausaLonga_QuandoOUsuarioForDiferente(){
+        Usuario usuario = DataHelper.createUsuario2();
+        UUID idUsuario = UUID.randomUUID();
+
+        when(usuarioRepository.buscaUsuarioPorEmail(anyString())).thenReturn(usuario);
+        APIException ex = assertThrows(APIException.class,
+                () -> usuarioApplicationService.mudarStatusParaPausaLonga(usuario.getEmail(), idUsuario));
+
+        assertNotEquals(idUsuario, usuario.getIdUsuario());
+        assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatusException());
+    }
 }

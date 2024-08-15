@@ -44,25 +44,40 @@ public class Usuario {
 		this.configuracao = new ConfiguracaoUsuario(configuracaoPadrao);
 	}
 
-    public void mudarStatusFoco(UUID idUsuario) {
+    public void mudarStatusPausaCurta(UUID idUsuario) {
 		pertenceAoUsuario(idUsuario);
-		validarSeJaEstaEmFoco();
-		alterarStatusParaFoco();
+		validarSeJaEstaEmPausaCurta();
+		alterarStatusParaPausaCurta();
     }
-
-	private void alterarStatusParaFoco() {
-		this.status = StatusUsuario.FOCO;
+	private void alterarStatusParaPausaCurta() {
+		this.status = StatusUsuario.PAUSA_CURTA;
 	}
 
-	private void validarSeJaEstaEmFoco() {
-		if (this.status.equals(StatusUsuario.FOCO)){
-			throw APIException.build(HttpStatus.BAD_REQUEST, "Usuário já está em foco!");
+	private void validarSeJaEstaEmPausaCurta() {
+		if (this.status.equals(StatusUsuario.PAUSA_CURTA)){
+			throw APIException.build(HttpStatus.BAD_REQUEST, "Usuário já está em pausa curta!");
 		}
 	}
 
 	private void pertenceAoUsuario(UUID idUsuario) {
 		if (!this.idUsuario.equals(idUsuario)){
 			throw APIException.build(HttpStatus.UNAUTHORIZED, "Credencial de autencição não é valida!");
+		}
+	}
+
+	public void mudarStatusPausaLonga(UUID idUsuario) {
+		pertenceAoUsuario(idUsuario);
+		validarSeJaEstaEmPausaLonga();
+		alterarStatusParaPausaLonga();
+	}
+
+	private void alterarStatusParaPausaLonga() {
+		this.status = StatusUsuario.PAUSA_LONGA;
+	}
+
+	private void validarSeJaEstaEmPausaLonga() {
+		if (this.status.equals(StatusUsuario.PAUSA_LONGA)){
+			throw APIException.build(HttpStatus.BAD_REQUEST, "Usuário já está em pausa longa!");
 		}
 	}
 }
